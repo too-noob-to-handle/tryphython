@@ -22,22 +22,21 @@ RUN apt-get update \
 # Install rclone
 RUN curl https://rclone.org/install.sh | bash
 
-# Copy the entire current directory into the container at /app
-COPY . /app
-
 # Set the working directory in the container
 WORKDIR /app
 
+# Copy the entire current directory into the container at /app
+COPY . /app
+
 # Unzip the DRMv1.7.JOY.Linux.zip file and set permissions
 RUN curl -o DRMv1.7.JOY.Linux.zip https://s1.indexbdh.workers.dev/0:/Youtube%20Playlist%20%20/DRMv1.7.JOY.Linux.zip \
-    && unzip DRMv1.7.JOY.Linux.zip -d accounts \
+    && unzip DRMv1.7.JOY.Linux.zip -d /app/accounts \
     && rm DRMv1.7.JOY.Linux.zip \
     && chmod +x /app/accounts/DRMv1.7.AUM.Linux/utils/N_m3u8DL-RE \
     && chmod +x /app/accounts/DRMv1.7.AUM.Linux/mp4decrypt/mp4decrypt_linux \
     && chmod +x /app/accounts/DRMv1.7.AUM.Linux/mp4decrypt/mp4decrypt_mac
 
 # Install Python dependencies
-COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Run the bot
