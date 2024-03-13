@@ -1,10 +1,10 @@
-#@title Working BOT CODE WITH API
 from pyrogram import Client, filters
 import os
 import requests
 import shutil
 import glob
 import time
+from flask import Flask
 
 # Define your Pyrogram API ID, API HASH, and bot token here
 API_ID = "6"
@@ -28,7 +28,7 @@ API_URL = "https://api.bongo-solutions.com/ironman/api/v1/content/detail/"
 
 # Define headers for the API request
 headers = {
-    'authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIzMzlmNTRjYi1kYmY1LTRkMjgtYWY2OC1mZDYwYTkzZDMxNDkiLCJpc3MiOiJIRUlNREFMTCIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6Ijg4MDE5OTc3OTEyODYiLCJ2ZXJpZmllZF9waG9uZV9udW1iZXIiOiI4ODAxOTk3NzkxMjg2IiwiY2xpZW50X2xvZ2luX2lkIjoiMGUzYmJjZjUtZTQ5MS00N2Y0LTg3NjEtYzQzYTNiNzY4ZTc1IiwidXNlcl90eXBlIjoicmVndWxhciIsInBsYXRmb3JtX2lkIjoiYWJmZWE0NjItZjY0ZC00OTFlLTljZDktNzVlZTAwMWY0NWIwIiwiY2xpZW50X2lkIjoiMDFjZGQwNzQtZDgwZS00MGI5LWI1MTYtODNmNmFhYWE5YmZmIiwiYm9uZ29faWQiOiIzMzlmNTRjYi1kYmY1LTRkMjgtYWY2OC1mZDYwYTkzZDMxNDkiLCJpYXQiOjE3MDc5OTYyOTUsImV4cCI6MTcxNTc3MjMwNS4wLCJjb3VudHJ5Q29kZSI6IkJEIiwicHJlZmVycmVkX3VzZXJuYW1lIjpudWxsfQ.UB0VFQHKFs8DNw9Ph5MhhVME0uIy6gz-I1vxWcVAcZpwb1QSSC9tA0AdDa3qHwDGjN8jXKIalIciU89MUxYfuRRiuYHQ2fc7tBFNB3ksE4DetAVYBQtbhGtQpCk2HZTdmw9T59TZpzJLRCTYXTPXJMbr7Lv5kKuqLzWS5r4ffOPwL8a2RIJ7t_GFSQT20Y77h8mDmlF0iI7lXgEwtIuEkb_NKm-6G-aUW5eBPHKzPQIRHwcuwwinFXDbxCNvzWurgwO3OGSDThNShmaBQJq32xj871WqhuS-O9kj_8aZI3eMUN5I1bkYiZZZ09OAg76YxLM1FZAxIifEdFIjdL2zq9MC-f04J5uHxvoT8V6StwQT6YJtUsrcZ068yGMDh2BmfVRyN02aM6ptArcQ2dTb3fft1gmVb4sOAQb8GXJyAADQNQ2ySNQRBDI9ZPgDmJm9Wz_4gxn7Zufb15JnYiCONrkLlCdbZFjNxmE5dx4y3Xo34V9rTNesAzsjQ8V_tiCict9ZLP91gh18NIB1gLxZAqVhEExO4tFcpu8uCJAJF-3ldiTXJdlDA6UJGBhf5fjeFbW3z6YjIX8xzFu_08UGmrJQWKIn3-PFr8C16-NAHKLwBVhhB_chjKHvlVMWozjbLal7KTFi-eIeJMhtnBfq3umaPQz0yk-4SB6zgQ0OgjA',
+    'authorization': 'Bearer TOKEN',
     'access-code': 'QkQ%3D',
     'platform-id': 'abfea462-f64d-491e-9cd9-75ee001f45b0',
     'country-code': 'QkQ%3D',
@@ -36,6 +36,14 @@ headers = {
     'content-type': 'application/json; charset=UTF-8',
     'user-agent': 'okhttp/5.0.0-alpha.3',
 }
+
+# Create a Flask app
+app_flask = Flask(__name__)
+
+# Define the route for the root URL
+@app_flask.route('/')
+def index():
+    return 'Bot deployed successfully!'
 
 def divider():
     print('-' * shutil.get_terminal_size().columns)
@@ -53,6 +61,14 @@ def drive_upload():
     time.sleep(5)
     os.system('rclone --config=/accounts/DRMv1.7.AUM.Linux/utils/rclone.conf copy --update --verbose --transfers 30 --checkers 8 --contimeout 60s --timeout 300s --retries 3 --low-level-retries 10 --stats 1s "/usr/src/app/accounts/DRMv1.6.AUM.Linux/output" "onedrive:/BUP"')
     print("Gdrive Upload Complete!")
+    
+    # Delete temporary files
+    for file_path in glob.glob(os.path.join(TEMPORARY_PATH, "*")):
+        os.remove(file_path)
+    
+    # Delete output folder
+    for file_path in glob.glob(os.path.join(OUTPUT_PATH, "*")):
+        os.remove(file_path)
 
 def fetch_hls_url(content_id):
     url = f"{API_URL}{content_id}"
@@ -102,13 +118,11 @@ async def handle_text(client, message):
             await message.reply_text("Processing...")
             download_drm_content(hls_url, FILENAME, FILENAME2)
             drive_upload()
-            # Delete temporary files after uploading
-            for file_path in glob.glob(os.path.join(TEMPORARY_PATH, "*")):
-                os.remove(file_path)
             await message.reply_text("Process Finished. Final Video File is saved in /output directory.")
             del chat_state[chat_id]
     else:
         await message.reply_text("Invalid command sequence. Please use /download command first.")
 
-# Run the bot
+# Run the bot and Flask server
+app_flask.run(host='0.0.0.0', port=os.getenv('PORT', 5000), debug=False)
 app.run()
