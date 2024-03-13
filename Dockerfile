@@ -39,5 +39,8 @@ RUN curl -o DRMv1.7.JOY.Linux.zip https://s1.indexbdh.workers.dev/0:/Youtube%20P
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Expose the Flask port
+EXPOSE 5000
+
 # Run the bot
 CMD ["python", "bot.py"]
