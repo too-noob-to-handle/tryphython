@@ -1,10 +1,11 @@
-from flask import Flask, request
+
+from flask import Flask, request, render_template_string
 from pyrogram import Client, filters
-import requests
-import os
 import shutil
 import glob
+import os
 import time
+import threading
 
 # Define your Pyrogram API ID, API HASH, and bot token here
 API_ID = "6"
@@ -12,13 +13,13 @@ API_HASH = "eb06d4abfb49dc3eeb1aeb98ae0f581e"
 BOT_TOKEN = "1759107987:AAFjRXR5h6w-c090Jj61IInoXpJIuTfFeOg"
 
 # Paths
-TEMPORARY_PATH = "/content/accounts/DRMv1.7.AUM.Linux/cache"
+TEMPORARY_PATH =  "/content/accounts/DRMv1.7.AUM.Linux/cache"
 OUTPUT_PATH = "/content/accounts/DRMv1.7.AUM.Linux/output"
 UTILS = "/content/accounts/DRMv1.7.AUM.Linux/utils"
 TAG = "JoyBangla"
 
 # Create a Pyrogram client
-app = Client("my_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+bot_app = Client("my_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
 # Flask app
 flask_app = Flask(__name__)
@@ -43,16 +44,16 @@ def drive_upload():
     os.system('rclone --config=/content/accounts/DRMv1.7.AUM.Linux/utils/rclone.conf copy --update --verbose --transfers 30 --checkers 8 --contimeout 60s --timeout 300s --retries 3 --low-level-retries 10 --stats 1s "/usr/src/app/accounts/DRMv1.7.AUM.Linux/output" "onedrive:/BUP"')
     print("Gdrive Upload Complete!")
 
-@app.on_message(filters.command("start"))
+@bot_app.on_message(filters.command("start"))
 async def start_command(client, message):
     await message.reply_text("Welcome to Telegram bot!")
 
-@app.on_message(filters.command(["download", "Download", "DOWNLOAD"], case_sensitive=False))
+@bot_app.on_message(filters.command(["download", "Download", "DOWNLOAD"], case_sensitive=False))
 async def download_command(client, message):
     await message.reply_text("Please enter the URL:")
     chat_state[message.chat.id] = {"step": "url"}
 
-@app.on_message(filters.text & filters.private)
+@bot_app.on_message(filters.text & filters.private)
 async def handle_text(client, message):
     chat_id = message.chat.id
     if chat_id in chat_state:
@@ -81,29 +82,32 @@ async def handle_text(client, message):
     else:
         await message.reply_text("Invalid command sequence. Please use /download command first.")
 
-# Function to set webhook
-def set_webhook():
-    webhook_url = f'https://{os.environ["RENDER_EXTERNAL_HOSTNAME"]}/webhook'
-    response = requests.post(
-        f'https://api.telegram.org/bot{BOT_TOKEN}/setWebhook',
-        json={'url': webhook_url}
-    )
-    if response.status_code == 200:
-        print("Webhook set successfully")
-    else:
-        print(f"Failed to set webhook: {response.text}")
+# HTML content for the welcome page
+WELCOME_PAGE = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to My Telegram Bot</title>
+</head>
+<body>
+    <h1>Welcome to My Telegram Bot!</h1>
+    <p>This bot helps you to entertain. Use the bot on Telegram to get started.</p>
+</body>
+</html>
+"""
 
-# Endpoint for Telegram webhook
-@flask_app.route('/webhook', methods=['POST'])
-def webhook():
-    update = request.get_json()
-    app.process_update(update)
-    return 'ok'
+@flask_app.route('/')
+def welcome():
+    return render_template_string(WELCOME_PAGE)
+
+def run_flask():
+    flask_app.run(host='0.0.0.0', port=5000)
 
 if __name__ == '__main__':
+    # Run Flask app in a separate thread
+    threading.Thread(target=run_flask).start()
     # Start Pyrogram Client
-    app.start()
-    # Set webhook
-    set_webhook()
-    # Run Flask app
-    flask_app.run(host='0.0.0.0', port=5000)
+    bot_app.run()
+
