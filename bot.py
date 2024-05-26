@@ -11,9 +11,18 @@ API_HASH = "eb06d4abfb49dc3eeb1aeb98ae0f581e"
 BOT_TOKEN = "1759107987:AAGAT2RB2NnSlccEPTOzgSHZUYRZA6UVmmM"
 
 # Paths
-TEMPORARY_PATH =  "/content/accounts/DRMv1.7.AUM.Linux/cache"
-OUTPUT_PATH = "/content/accounts/DRMv1.7.AUM.Linux/output"
-UTILS = "/content/accounts/DRMv1.7.AUM.Linux/utils"
+# Get the current working directory
+current_directory = os.getcwd()
+
+# Define relative paths
+RELATIVE_TEMPORARY_PATH = "accounts/DRMv1.7.AUM.Linux/cache"
+RELATIVE_OUTPUT_PATH = "accounts/DRMv1.7.AUM.Linux/output"
+RELATIVE_UTILS = "accounts/DRMv1.7.AUM.Linux/utils"
+
+# Construct absolute paths
+TEMPORARY_PATH = os.path.join(current_directory, RELATIVE_TEMPORARY_PATH)
+OUTPUT_PATH = os.path.join(current_directory, RELATIVE_OUTPUT_PATH)
+UTILS = os.path.join(current_directory, RELATIVE_UTILS)
 TAG = "JoyBangla"
 
 # Create a Pyrogram client
