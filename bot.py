@@ -15,9 +15,9 @@ BOT_TOKEN = "1759107987:AAGAT2RB2NnSlccEPTOzgSHZUYRZA6UVmmM"
 current_directory = os.getcwd()
 
 # Define relative paths
-RELATIVE_TEMPORARY_PATH = "accounts/DRMv1.7.AUM.Linux/cache"
-RELATIVE_OUTPUT_PATH = "accounts/DRMv1.7.AUM.Linux/output"
-RELATIVE_UTILS = "accounts/DRMv1.7.AUM.Linux/utils"
+RELATIVE_TEMPORARY_PATH = "accounts/DRMv1.7.JOY.Linux/cache"
+RELATIVE_OUTPUT_PATH = "accounts/DRMv1.7.JOY.Linux/output"
+RELATIVE_UTILS = "accounts/DRMv1.7.JOY.Linux/utils"
 
 # Construct absolute paths
 TEMPORARY_PATH = os.path.join(current_directory, RELATIVE_TEMPORARY_PATH)
