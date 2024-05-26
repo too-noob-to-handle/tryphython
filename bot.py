@@ -1,5 +1,6 @@
 from flask import Flask, request
 from pyrogram import Client, filters
+import requests
 import os
 import shutil
 import glob
@@ -11,7 +12,7 @@ API_HASH = "eb06d4abfb49dc3eeb1aeb98ae0f581e"
 BOT_TOKEN = "1759107987:AAFjRXR5h6w-c090Jj61IInoXpJIuTfFeOg"
 
 # Paths
-TEMPORARY_PATH =  "/content/accounts/DRMv1.7.AUM.Linux/cache"
+TEMPORARY_PATH = "/content/accounts/DRMv1.7.AUM.Linux/cache"
 OUTPUT_PATH = "/content/accounts/DRMv1.7.AUM.Linux/output"
 UTILS = "/content/accounts/DRMv1.7.AUM.Linux/utils"
 TAG = "JoyBangla"
@@ -80,6 +81,18 @@ async def handle_text(client, message):
     else:
         await message.reply_text("Invalid command sequence. Please use /download command first.")
 
+# Function to set webhook
+def set_webhook():
+    webhook_url = f'https://{os.environ["RENDER_EXTERNAL_HOSTNAME"]}/webhook'
+    response = requests.post(
+        f'https://api.telegram.org/bot{BOT_TOKEN}/setWebhook',
+        json={'url': webhook_url}
+    )
+    if response.status_code == 200:
+        print("Webhook set successfully")
+    else:
+        print(f"Failed to set webhook: {response.text}")
+
 # Endpoint for Telegram webhook
 @flask_app.route('/webhook', methods=['POST'])
 def webhook():
@@ -88,7 +101,9 @@ def webhook():
     return 'ok'
 
 if __name__ == '__main__':
-    # Set webhook
+    # Start Pyrogram Client
     app.start()
-    app.set_webhook(url='https://tryphython-mwuk.onrender.com/webhook')
+    # Set webhook
+    set_webhook()
+    # Run Flask app
     flask_app.run(host='0.0.0.0', port=5000)
