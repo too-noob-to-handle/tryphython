@@ -141,7 +141,7 @@ if __name__ == '__main__':
     # Run Flask app in a separate thread
     threading.Thread(target=run_flask).start()
     # Start Pyrogram Client
-    bot_app.run()
+    app.run()
 
 
 
