@@ -1,4 +1,3 @@
-
 from flask import Flask, request, render_template_string
 from pyrogram import Client, filters
 import shutil
@@ -10,7 +9,7 @@ import threading
 # Define your Pyrogram API ID, API HASH, and bot token here
 API_ID = "6"
 API_HASH = "eb06d4abfb49dc3eeb1aeb98ae0f581e"
-BOT_TOKEN = "1759107987:AAFjRXR5h6w-c090Jj61IInoXpJIuTfFeOg"
+BOT_TOKEN = "1759107987:AAGAT2RB2NnSlccEPTOzgSHZUYRZA6UVmmM"
 
 # Paths
 TEMPORARY_PATH =  "/content/accounts/DRMv1.7.AUM.Linux/cache"
@@ -18,8 +17,8 @@ OUTPUT_PATH = "/content/accounts/DRMv1.7.AUM.Linux/output"
 UTILS = "/content/accounts/DRMv1.7.AUM.Linux/utils"
 TAG = "JoyBangla"
 
-# Create a Pyrogram client
-bot_app = Client("my_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+# Create a Pyrogram client with a session file
+bot_app = Client("my_bot_session", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
 # Flask app
 flask_app = Flask(__name__)
@@ -93,7 +92,7 @@ WELCOME_PAGE = """
 </head>
 <body>
     <h1>Welcome to My Telegram Bot!</h1>
-    <p>This bot helps you to entertain. Use the bot on Telegram to get started.</p>
+    <p>This bot helps you entertain. Use the bot on Telegram to get started.</p>
 </body>
 </html>
 """
@@ -110,4 +109,3 @@ if __name__ == '__main__':
     threading.Thread(target=run_flask).start()
     # Start Pyrogram Client
     bot_app.run()
-
