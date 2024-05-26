@@ -8,7 +8,7 @@ import time
 # Define your Pyrogram API ID, API HASH, and bot token here
 API_ID = "6"
 API_HASH = "eb06d4abfb49dc3eeb1aeb98ae0f581e"
-BOT_TOKEN = "1759107987:AAFvZAGpwCOoo6013w7RePlPoT6jN5B58zM"
+BOT_TOKEN = "1759107987:AAFjRXR5h6w-c090Jj61IInoXpJIuTfFeOg"
 
 # Paths
 TEMPORARY_PATH =  "/content/accounts/DRMv1.7.AUM.Linux/cache"
