@@ -32,9 +32,9 @@ COPY . /app
 RUN curl -o DRMv1.7.JOY.Linux.zip https://s1.indexbdh.workers.dev/0:/Youtube%20Playlist%20%20/DRMv1.7.JOY.Linux.zip \
     && unzip DRMv1.7.JOY.Linux.zip -d /accounts \
     && rm DRMv1.7.JOY.Linux.zip \
-    && chmod +x /accounts/DRMv1.7.AUM.Linux/utils/N_m3u8DL-RE \
-    && chmod +x /accounts/DRMv1.7.AUM.Linux/mp4decrypt/mp4decrypt_linux \
-    && chmod +x /accounts/DRMv1.7.AUM.Linux/mp4decrypt/mp4decrypt_mac
+    && chmod +x /accounts/DRMv1.7.JOY.Linux/utils/N_m3u8DL-RE \
+    && chmod +x /accounts/DRMv1.7.JOY.Linux/mp4decrypt/mp4decrypt_linux \
+    && chmod +x /accounts/DRMv1.7.JOY.Linux/mp4decrypt/mp4decrypt_mac
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
