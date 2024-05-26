@@ -90,5 +90,5 @@ def webhook():
 if __name__ == '__main__':
     # Set webhook
     app.start()
-    app.set_webhook(url='https://<your-render-app-url>/webhook')
+    app.set_webhook(url='https://tryphython.onrender.com/webhook')
     flask_app.run(host='0.0.0.0', port=5000)
